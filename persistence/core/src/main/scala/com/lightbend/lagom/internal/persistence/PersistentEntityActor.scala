@@ -76,8 +76,6 @@ private[lagom] class PersistentEntityActor[C, E, S](
   override def receiveRecover: Receive = {
     var initialized = false
 
-    println("###### in receive recover #######")
-
     def initEmpty(): Unit =
       if (!initialized) {
         val inital = entity.internalInitialBehaviour(Option.empty[S])

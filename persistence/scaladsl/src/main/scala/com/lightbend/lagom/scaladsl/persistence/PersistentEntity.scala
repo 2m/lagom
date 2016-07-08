@@ -155,12 +155,15 @@ abstract class PersistentEntity[Command, Event, State] extends CorePersistentEnt
     val evtHandlers: PartialFunction[_ <: Event, Behavior]                                             = PartialFunction.empty
   ) {
 
+    // TODO apidocs
     def withState(state: State): BehaviorBuilder =
       copy(state = state)
 
+    // TODO apidocs
     def withEventHandlers(evtHandlers: PartialFunction[Any, Behavior]): BehaviorBuilder =
       copy(evtHandlers = evtHandlers)
 
+    // TODO apidocs
     def withCommandHandlers(cmdHandlers: PartialFunction[Any, Function[CommandContext[Any], Persist[_ <: Event]]]): BehaviorBuilder =
       copy(cmdHandlers = cmdHandlers)
 
@@ -170,81 +173,6 @@ abstract class PersistentEntity[Command, Event, State] extends CorePersistentEnt
       cmdHandlers: PartialFunction[_ <: Command, Function[CommandContext[Any], Persist[_ <: Event]]] = cmdHandlers
     ) =
       new BehaviorBuilder(state, cmdHandlers, evtHandlers)
-
-    /**
-     * Register an event handler for a given event class. The `handler` function
-     * is supposed to return the new state after applying the event to the current state.
-     * Current state can be accessed with the `state` method of the `PersistentEntity`.
-     */
-    /*def setEventHandler[A <: Event](eventClass: Class[A], handler: Function[A, State]): Unit =
-      setEventHandlerChangingBehavior[A](eventClass, evt =>
-        behavior.withState(handler.apply(evt)))*/
-
-    /**
-     * Register an event handler that is updating the behavior for a given event class.
-     * The `handler` function  is supposed to return the new behavior after applying the
-     * event to the current state. Current behavior can be accessed with the `behavior`
-     * method of the `PersistentEntity`.
-     */
-    /*def setEventHandlerChangingBehavior[A <: Event](eventClass: Class[A], handler: Function[A, Behavior]): Unit =
-      eventHandlers = eventHandlers.updated(eventClass, handler)*/
-
-    /**
-     * Remove an event handler for a given event class.
-     */
-    /*def removeEventHandler(eventClass: Class[_ <: Event]): Unit =
-      eventHandlers -= eventClass*/
-
-    /**
-     * Register a command handler for a given command class.
-     *
-     * The `handler` function is supposed to return a `Persist` directive that defines
-     * what event or events, if any, to persist. Use the `thenPersist`, `thenPersistAll`
-     * or `done`  methods of the context that is passed to the handler function to create the
-     *  `Persist` directive.
-     *
-     * After persisting an event external side effects can be performed in the `afterPersist`
-     * function that can be defined when creating the `Persist` directive.
-     * A typical side effect is to reply to the request to confirm that it was performed
-     * successfully. Replies are sent with the `reply` method of the context that is passed
-     * to the command handler function.
-     *
-     * The `handler` function may validate the incoming command and reject it by
-     * sending a `reply` and returning `ctx.done()`.
-     */
-    /*def setCommandHandler[R, A <: Command with ReplyType[R]](
-      commandClass: Class[A],
-      handler:      Function2[A, CommandContext[R], Persist[_ <: Event]]
-    ): Unit = {
-      commandHandlers = commandHandlers.updated(
-        commandClass,
-        handler.asInstanceOf[Function2[A, CommandContext[Any], Persist[_ <: Event]]]
-      )
-    }*/
-
-    /**
-     * Remove a command handler for a given command class.
-     */
-    /*def removeCommandHandler(commandClass: Class[_ <: Command]): Unit =
-      commandHandlers -= commandClass*/
-
-    /**
-     *  Register a read-only command handler for a given command class. A read-only command
-     *  handler does not persist events (i.e. it does not change state) but it may perform side
-     *  effects, such as replying to the request. Replies are sent with the `reply` method of the
-     *  context that is passed to the command handler function.
-     */
-    /*def setReadOnlyCommandHandler[R, A <: Command with ReplyType[R]](
-      commandClass: Class[A],
-      handler:      JBiConsumer[A, ReadOnlyCommandContext[R]]
-    ): Unit = {
-      setCommandHandler[R, A](commandClass, new Function2[A, CommandContext[R], Persist[_ <: Event]] {
-        override def apply(cmd: A, ctx: CommandContext[R]): Persist[Event] = {
-          handler.accept(cmd, ctx)
-          ctx.done()
-        }
-      });
-    }*/
 
     /**
      * Construct the corresponding immutable `Behavior`.

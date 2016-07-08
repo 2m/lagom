@@ -185,8 +185,8 @@ object PersistentEntityRefSpec {
     }
 
     private def addCommandHandler(eventFactory: String => Evt): PartialFunction[Any, Function[CommandContext[Any], Persist[_ <: Evt]]] = {
-      case Add(el, times) => ctx =>
-        val element = Option(el).getOrElse {
+      case Add(element, times) => ctx =>
+        if (element == null) {
           throw new NullPointerException() //SimulatedNullpointerException()
         }
         if (element.length == 0) {

@@ -40,9 +40,6 @@ object CorePersistentEntity {
  */
 trait CorePersistentEntity[Command, Event, State] {
 
-  /**
-   * INTERNAL API
-   */
   private var _entityId: String = _
 
   /**
@@ -50,9 +47,6 @@ trait CorePersistentEntity[Command, Event, State] {
    */
   private[lagom] def internalSetEntityId(id: String) = _entityId = id
 
-  /**
-   * INTERNAL API
-   */
   private var _behavior: Behavior = _
 
   /**
