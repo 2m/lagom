@@ -26,6 +26,7 @@ import java.util.function.BiConsumer
 import akka.actor.ExtendedActorSystem
 import com.google.inject.Guice
 import akka.cluster.MemberStatus
+import com.lightbend.lagom.persistence.PersistenceSpec
 
 object ClusteredPersistentEntityConfig extends MultiNodeConfig {
   val node1 = role("node1")
@@ -125,7 +126,7 @@ class ClusteredPersistentEntitySpec extends MultiNodeSpec(ClusteredPersistentEnt
 
   val registry: PersistentEntityRegistry = {
     val reg = injector.getInstance(classOf[PersistentEntityRegistry])
-    reg.register(classOf[TestEntity])
+    reg.register[TestEntity.Cmd, TestEntity.Evt, TestEntity.State, TestEntity](classOf[TestEntity]) // TODO fix type parameter inference
     reg
   }
 

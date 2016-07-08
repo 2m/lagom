@@ -11,8 +11,8 @@ import scala.language.implicitConversions
 import org.pcollections.HashTreePSet
 import org.pcollections.PSet
 
-import com.lightbend.lagom.javadsl.persistence.cassandra.CassandraConfig
-import com.lightbend.lagom.javadsl.persistence.cassandra.CassandraContactPoint
+import com.lightbend.lagom.persistence.cassandra.CassandraConfig
+import com.lightbend.lagom.persistence.cassandra.CassandraContactPoint
 
 import akka.actor.ActorSystem
 import javax.inject.Inject

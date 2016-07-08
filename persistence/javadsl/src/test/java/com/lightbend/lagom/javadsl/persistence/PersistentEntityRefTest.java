@@ -19,6 +19,7 @@ import com.lightbend.lagom.persistence.CorePersistentEntity.UnhandledCommandExce
 import com.lightbend.lagom.javadsl.persistence.TestEntity.Cmd;
 import com.lightbend.lagom.javadsl.persistence.TestEntity.Evt;
 import com.lightbend.lagom.javadsl.persistence.TestEntity.State;
+import com.lightbend.lagom.persistence.PersistenceSpec;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;

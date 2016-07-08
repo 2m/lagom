@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2016 Lightbend Inc. <http://www.lightbend.com>
  */
-package com.lightbend.lagom.javadsl.persistence.cassandra
+package com.lightbend.lagom.persistence.cassandra
 
 import java.net.URI
 import org.pcollections.PSet

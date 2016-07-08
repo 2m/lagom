@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2016 Lightbend Inc. <http://www.lightbend.com>
  */
-package com.lightbend.lagom.javadsl.persistence.cassandra;
+package com.lightbend.lagom.persistence.cassandra;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
@@ -9,7 +9,7 @@ import java.net.URI;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
- 
+
 @ParametersAreNonnullByDefault
 @Immutable
 public final class CassandraContactPoint {

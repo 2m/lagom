@@ -10,16 +10,11 @@ import com.google.inject.matcher.AbstractMatcher
 import com.google.inject.spi.InjectionListener
 import com.google.inject.spi.TypeEncounter
 import com.google.inject.spi.TypeListener
-import com.lightbend.lagom.internal.persistence.PersistentEntityRegistryImpl
-import com.lightbend.lagom.javadsl.persistence.cassandra.CassandraConfig
-import com.lightbend.lagom.internal.persistence.cassandra.CassandraConfigProvider
-import com.lightbend.lagom.internal.persistence.cassandra.CassandraReadSideImpl
-import com.lightbend.lagom.internal.persistence.cassandra.CassandraSessionImpl
 import com.lightbend.lagom.internal.persistence.cassandra.ServiceLocatorHolder
 import com.lightbend.lagom.javadsl.api.ServiceLocator
-import com.lightbend.lagom.javadsl.persistence.PersistenceModule.InitServiceLocatorHolder
 import com.lightbend.lagom.javadsl.persistence.cassandra.CassandraReadSide
 import com.lightbend.lagom.javadsl.persistence.cassandra.CassandraSession
+import com.lightbend.lagom.persistence.cassandra.CassandraConfig
 import com.lightbend.lagom.persistence.CorePersistentEntityRegistry
 import com.lightbend.lagom.persistence.cassandra.CoreCassandraSession
 import com.lightbend.lagom.persistence.cassandra.CoreCassandraReadSide
@@ -32,11 +27,15 @@ import com.lightbend.lagom.internal.persistence.cassandra.InternalCassandraSessi
 import com.lightbend.lagom.internal.persistence.cassandra.InternalCassandraReadSide
 
 import akka.actor.ActorSystem
+import scala.concurrent.ExecutionContext
+import com.lightbend.lagom.internal.persistence.cassandra.CassandraConfigProvider
 
 /**
  * Guice module for the Persistence API.
  */
 class PersistenceModule extends AbstractModule {
+  import PersistenceModule._
+
   override def configure(): Unit = {
     binder.bind(classOf[CorePersistentEntityRegistry]).to(classOf[InternalPersistentEntityRegistry])
     binder.bind(classOf[PersistentEntityRegistry]).to(classOf[PersistentEntityRegistryDelegate])

@@ -126,25 +126,22 @@ abstract class PersistentEntity[Command, Event, State] extends CorePersistentEnt
    * Create a `BehaviorBuilder` that corresponds to current `Behavior`, i.e. the builder
    * is populated with same state, same event and command handler functions.
    */
-  // TODO impl conversion from behaviour to javadsl behaviour builder
-  /*final def behaviorBuilder(): BehaviorBuilder =
-    new BehaviorBuilder(
-      state,
-      behavior.eventHandlers.mapValues(_.asJava),
-      behavior.commandHandlers.mapValues(_.asJava.asInstanceOf[JBiFunction[_ <: Command, CommandContext[Any], Persist[_ <: Event]]])
-    )*/
+  final def behaviorBuilder(): BehaviorBuilder =
+    new BehaviorBuilder(state, behavior)
 
   /**
    * Mutable builder that is used for defining the event and command handlers.
    * Use [#build] to create the immutable [[Behavior]].
    */
   protected final class BehaviorBuilder(
-    state:       State,
-    evtHandlers: Map[Class[_ <: Event], JFunction[_ <: Event, Behavior]],
-    cmdHandlers: Map[Class[_ <: Command], JBiFunction[_ <: Command, CommandContext[Any], Persist[_ <: Event]]]
+    state:            State,
+    evtHandlers:      Map[Class[_ <: Event], JFunction[_ <: Event, Behavior]],
+    cmdHandlers:      Map[Class[_ <: Command], JBiFunction[_ <: Command, CommandContext[Any], Persist[_ <: Event]]],
+    previousBehavior: Option[Behavior]
   ) {
 
-    def this(state: State) = this(state, Map.empty, Map.empty)
+    def this(state: State) = this(state, Map.empty, Map.empty, None)
+    def this(state: State, previousBehavior: Behavior) = this(state, Map.empty, Map.empty, Option(previousBehavior))
 
     private var _state = state
     private var eventHandlers: Map[Class[_ <: Event], JFunction[_ <: Event, Behavior]] = evtHandlers
@@ -237,10 +234,12 @@ abstract class PersistentEntity[Command, Event, State] extends CorePersistentEnt
      * Construct the corresponding immutable `Behavior`.
      */
     def build(): Behavior = {
-      val evtHandlersPf = evtHandlers.values.map(_.asScala.asInstanceOf[PartialFunction[Event, Behavior]]).foldLeft(PartialFunction.empty[Event, Behavior])(_ orElse _)
+      val evtHandlersPf = evtHandlers.values
+        .map(_.asScala.asInstanceOf[PartialFunction[Event, Behavior]])
+        .foldLeft(previousBehavior.map(_.eventHandlers).getOrElse(PartialFunction.empty[Event, Behavior]))(_ orElse _)
       val cmdHandlersPf = cmdHandlers.values
         .map(_.asScala.curried.asInstanceOf[PartialFunction[Command, Function[CoreCommandContext[Any], Persist[Event]]]])
-        .foldLeft(PartialFunction.empty[Command, Function[CoreCommandContext[Any], Persist[Event]]])(_ orElse _)
+        .foldLeft(previousBehavior.map(_.commandHandlers).getOrElse(PartialFunction.empty[Command, Function[CoreCommandContext[Any], Persist[Event]]]))(_ orElse _)
 
       Behavior(_state, evtHandlersPf, cmdHandlersPf)
     }
