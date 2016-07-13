@@ -459,7 +459,7 @@ public class TestEntity extends PersistentEntity<TestEntity.Cmd, TestEntity.Evt,
   }
 
   private Behavior becomeAppending(Behavior current) {
-    BehaviorBuilder b = behaviorBuilder();
+    BehaviorBuilder b = newBehaviorBuilder(current);
     b.setState(current.state().appendMode());
     b.setCommandHandler(Add.class, (cmd, ctx) -> {
       // note that null should trigger NPE, for testing exception
@@ -479,7 +479,7 @@ public class TestEntity extends PersistentEntity<TestEntity.Cmd, TestEntity.Evt,
   }
 
   private Behavior becomePrepending(Behavior current) {
-    BehaviorBuilder b = behaviorBuilder();
+    BehaviorBuilder b = newBehaviorBuilder(current);
     b.setState(current.state().prependMode());
     b.setCommandHandler(Add.class, (cmd, ctx) -> {
       if (cmd.getElement() == null || cmd.getElement() == "") {

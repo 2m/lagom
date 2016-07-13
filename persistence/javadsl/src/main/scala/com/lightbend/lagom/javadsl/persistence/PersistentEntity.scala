@@ -122,6 +122,8 @@ abstract class PersistentEntity[Command, Event, State] extends CorePersistentEnt
    */
   final def newBehaviorBuilder(state: State): BehaviorBuilder = new BehaviorBuilder(state)
 
+  final def newBehaviorBuilder(behavior: Behavior): BehaviorBuilder = new BehaviorBuilder(behavior)
+
   /**
    * Create a `BehaviorBuilder` that corresponds to current `Behavior`, i.e. the builder
    * is populated with same state, same event and command handler functions.
@@ -142,6 +144,7 @@ abstract class PersistentEntity[Command, Event, State] extends CorePersistentEnt
 
     def this(state: State) = this(state, Map.empty, Map.empty, None)
     def this(state: State, previousBehavior: Behavior) = this(state, Map.empty, Map.empty, Option(previousBehavior))
+    def this(previousBehavior: Behavior) = this(previousBehavior.state, Map.empty, Map.empty, Option(previousBehavior))
 
     private var _state = state
     private var eventHandlers: Map[Class[_ <: Event], JFunction[_ <: Event, Behavior]] = evtHandlers
